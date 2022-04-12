@@ -1,11 +1,17 @@
 const express = require('express');
+const connectDB = require('./connect');
+const  env = require('dotenv');
+const routes = require('./routes');
+env.config();
 
 const app = express();
+app.use(express.json());
 
-app.get("", (req, res)=>{
-    res.send("FIrst serevre");
-});
+routes.forEach((rt)=> app.use(rt.path, rt.route));
 
-app.listen(3333, ()=>{
-    console.log("server stared");
-})
+const StartApp = async () =>{
+    await connectDB(process.env.DBURL);
+    app.listen(process.env.port, ()=> console.log('server started...'));
+}
+
+StartApp();
