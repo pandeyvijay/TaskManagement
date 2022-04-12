@@ -4,11 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import Main from './Components/mainComponent/main';
 import { TitleH1 } from './Components/StyledComponents/common';
 
-function App() {
-  
-
-
-    
+function App() {    
   return (
     <div className="App">
       <div className="container">
