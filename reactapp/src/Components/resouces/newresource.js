@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import useFormState from "./resourceReducer";
 import MessageBox from "../common/message";
@@ -19,7 +19,7 @@ const enableSubmit = (state) => {
 };
 
 const NewMember = () => {
-  const [person, updateForm, submitForm, validation] = useFormState({
+  const [person, updateForm, submitForm, validation, loadTeams] = useFormState({
     fName: { value: "", touched: false, error: "" },
     lName: { value: "", touched: false, error: "" },
     team: { value: [], touched: false, error: "" },
@@ -27,10 +27,21 @@ const NewMember = () => {
     password: { value: "", touched: false, error: "" },
     isValidForm: false,
     saveState: "None",
+    teams: [],
+    loading: false,
   });
 
-  const { fName, lName, team, email, password, isValidForm, saveState } =
-    person;
+  const {
+    fName,
+    lName,
+    team,
+    email,
+    password,
+    isValidForm,
+    saveState,
+    loading,
+    teams,
+  } = person;
   const enableBtn = enableSubmit(person);
   const onSubmit = (ev) => {
     ev.preventDefault();
@@ -48,10 +59,14 @@ const NewMember = () => {
     });
   };
 
+  useEffect(() => {
+    loadTeams();
+  }, []);
+
   return (
     <>
       <div className="container-fluid" style={{ padding: "0.2em" }}>
-        {saveState == "Saving" && <Spinner />}
+        {loading || (saveState == "Saving" && <Spinner />)}
         {(saveState == "Saved" || saveState == "SaveFailed") && (
           <MessageBox
             msg={saveState == "Saved" ? "save completed" : "Save Failed"}
@@ -108,14 +123,16 @@ const NewMember = () => {
               <label htmlFor="team" className="form-label">
                 Teams
               </label>
-              <input
+              <select
                 onChange={onChange}
                 value={team.value}
                 name="team"
-                type="text"
-                className="form-control"
-                placeholder="Teams"
-              />
+                className="form-select"
+              >
+                {teams.map((t) => {
+                  return <option key={t.key}>{t.value}</option>;
+                })}
+              </select>
             </StyledColumn>
           </StyledRow>
           <StyledRow className="row position-relative">

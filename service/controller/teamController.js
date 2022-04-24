@@ -1,4 +1,4 @@
-const { createTeam } = require("../middletier/teamService");
+const { createTeam, getAllTeam } = require("../middletier/teamService");
 
 const saveTeam = async (req, res) => {
   try {
@@ -9,6 +9,17 @@ const saveTeam = async (req, res) => {
   }
 };
 
+const getTeams = async (req, res) => {
+  try {
+    console.log("teams gets");
+    const teams = await getAllTeam();
+    return res.status(200).send(teams);
+  } catch (ex) {
+    return res.status(400).send(ex);
+  }
+};
+
 module.exports = {
   saveTeam,
+  getTeams,
 };

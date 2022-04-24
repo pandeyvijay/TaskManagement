@@ -1,7 +1,6 @@
 const TeamModel = require("../model/teamModel");
 
 const createTeam = async (newTeam) => {
-  console.log(newTeam);
   try {
     const team = await TeamModel.create(newTeam);
     return team;
@@ -10,6 +9,12 @@ const createTeam = async (newTeam) => {
   }
 };
 
+const getAllTeam = async () => {
+  const teams = await TeamModel.find({});
+  return teams;
+}
+
 module.exports = {
   createTeam,
+  getAllTeam,
 };

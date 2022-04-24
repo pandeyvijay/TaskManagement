@@ -6,6 +6,8 @@ export default function useFormState(initialState) {
     updateForm: "UPDATE_FORM",
     submit: "SUBMIT_FORM",
     Save: "Save",
+    Loading: "Loading",
+    Load_Team: "Load_Team",
   };
 
   const validate = (name, value) => {
@@ -26,6 +28,11 @@ export default function useFormState(initialState) {
 
   const reducer = (oldState, action) => {
     switch (action.type) {
+      case actions.Loading:
+        return {
+          ...oldState,
+          loading: action.data,
+        };
       case actions.updateForm:
         const { name, value, error, touched, isValidForm } = action.data;
         return {
@@ -44,7 +51,13 @@ export default function useFormState(initialState) {
           ...oldState,
           saveState: action.data ? "Saved" : "SaveFailed",
         };
+      case actions.Load_Team:
+        return {
+          ...oldState,
+          teams: action.data,
+        };
     }
+    return oldState;
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -57,6 +70,16 @@ export default function useFormState(initialState) {
         touched: true,
       },
     });
+  };
+
+  const loadTeams = async () => {
+    debugger;
+    dispatch({ type: actions.Loading, data: true });
+    const resp = await axios.get("http://localhost:3333/team");
+    const teams = resp.data.map((t) => {
+      return { key: t._id, value: t.name };
+    });
+    dispatch({ type: actions.Load_Team, data: teams });
   };
 
   const submitForm = async (person) => {
@@ -93,5 +116,5 @@ export default function useFormState(initialState) {
     }
   };
 
-  return [state, updateForm, submitForm, validate];
+  return [state, updateForm, submitForm, validate, loadTeams];
 }
