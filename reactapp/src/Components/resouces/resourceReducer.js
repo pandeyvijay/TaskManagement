@@ -82,7 +82,7 @@ export default function useFormState(initialState) {
       //   setTimeout(() => dispatch({ type: actions.Save, data: true }), 2000)
       // );
 
-      const data = await axios.post("http://localhost:3333/members", info, {
+      const data = await axios.post("http://localhost:3333/member", info, {
         headers: {
           "Content-Type": "application/json",
         },

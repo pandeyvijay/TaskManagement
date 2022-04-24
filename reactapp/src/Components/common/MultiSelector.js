@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const OptionDiv = ({ value, onChange }) => {
+const OptionDiv = ({ value, onChange, selected }) => {
   return (
     <div
       className="select-option select-all-option"
@@ -10,6 +10,7 @@ const OptionDiv = ({ value, onChange }) => {
     >
       <span class="select-option-text">
         <input
+          checked={selected}
           type="checkbox"
           class="form-check-input"
           autocompleted=""
@@ -23,10 +24,14 @@ const OptionDiv = ({ value, onChange }) => {
   );
 };
 
-const MultiSelector = ({ customStyles, option, values }) => {
+const MultiSelector = ({
+  customStyles,
+  options,
+  selectedOption = [],
+  selectEvent,
+}) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const [options, setOptions] = useState(option);
-  const [selOptions, setSelOptions] = useState([]);
+  const [search, setSearch] = useState("");
   const containerRef = useRef();
   const ddRef = useRef();
   const toggleDropDown = (event) => {
@@ -35,16 +40,21 @@ const MultiSelector = ({ customStyles, option, values }) => {
     });
   };
 
+  useEffect(() => {});
+
   useEffect(() => {
     const { bottom, left, width } =
       containerRef.current.getBoundingClientRect();
     ddRef.current.style.cssText += `top:${bottom}px;left:${left}px;width:${width}px;`;
   }, []);
-  const text = selOptions
+
+  const text = selectedOption
     .map((o) => {
       return o.value;
     })
     .join(",");
+
+  const selKeys = selectedOption.map((s) => s.key);
   return (
     <>
       <div ref={containerRef} class="form-outline" style={customStyles}>
@@ -90,23 +100,18 @@ const MultiSelector = ({ customStyles, option, values }) => {
             style={{ maxHeight: "190px", overflowY: "auto" }}
           >
             <div className="select-options-list">
-              {options.map((val, index) => {
-                return (
-                  <OptionDiv
-                    key={val.key}
-                    onChange={(selVal, checked) => {
-                      const { key, value } = selVal;
-                      setSelOptions((opts) => {
-                        if (!checked) {
-                          return opts.filter((o) => o.key !== key);
-                        }
-                        return [...opts, selVal];
-                      });
-                    }}
-                    value={val}
-                  ></OptionDiv>
-                );
-              })}
+              {options &&
+                options.map((val, index) => {
+                  const isSelected = selKeys.indexOf(val.key) !== -1;
+                  return (
+                    <OptionDiv
+                      selected={isSelected}
+                      key={val.key}
+                      onChange={selectEvent}
+                      value={val}
+                    ></OptionDiv>
+                  );
+                })}
             </div>
           </div>
         </div>

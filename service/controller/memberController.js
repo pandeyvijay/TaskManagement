@@ -1,8 +1,13 @@
-const MemberModel = require("../model/memberModel");
+const { createMember, getAllMember } = require("../middletier/memberService");
 
 const saveMember = async (req, res) => {
-  await MemberModel.create(req.body);
-  return res.status(200).send();
+  const member = await createMember(req.body);
+  return res.status(200).send(member);
 };
 
-module.exports = { saveMember };
+const getMembers = async (req, res) => {
+  const members = await getAllMember();
+  return res.status(200).send(members);
+};
+
+module.exports = { saveMember, getMembers };

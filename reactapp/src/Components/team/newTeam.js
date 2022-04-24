@@ -1,8 +1,65 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyledRow, StyledColumn } from "../StyledComponents/common";
 import MultiSelector from "../common/MultiSelector";
+import axios from "axios";
+
+const saveTeam = async (name, memberIds, projectId) => {
+  debugger;
+  return await axios.post("http://localhost:3333/team", {
+    name,
+    memberIds,
+    projectId,
+  });
+};
 
 const NewTeam = () => {
+  const [membersOptions, setMembersOptions] = useState([]);
+  const [selMembers, setSelMembers] = useState([]);
+  const [name, setName] = useState("");
+  const [project, setProject] = useState("");
+
+  const onSave = () => {
+    if (!name) return alert("enter name");
+    if (!project) return alert("enter project");
+    const memberIds = selMembers.map((m) => m.key);
+    saveTeam(name, memberIds, project);
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const members = await axios.get("http://localhost:3333/member");
+        const options = members.data.map((d) => {
+          return {
+            key: d._id,
+            value: d.firstName + " " + d.lastName,
+          };
+        });
+        setMembersOptions(options);
+      } catch {}
+    }
+    fetchData();
+  }, []);
+
+  const handleChange = (e) => {
+    debugger;
+    if (e.target.name === "name") {
+      setName(e.target.value);
+    } else if (e.target.name === "project") {
+      setProject(e.target.value);
+    }
+  };
+
+  const onTeamSelectionChange = (selVal, checked) => {
+    const { key, value } = selVal;
+    setSelMembers((opts) => {
+      if (!checked) {
+        return opts.filter((o) => o.key !== key);
+      }
+      return [...opts, selVal];
+    });
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -12,15 +69,18 @@ const NewTeam = () => {
               Team Name
             </label>
             <input
+              name="name"
               style={{
                 display: "inline-block",
                 marginLeft: "1em",
                 width: "50%",
               }}
+              onChange={handleChange}
               type="text"
               className="form-control"
               id="teamName"
               placeholder="TeamName"
+              value={name}
             />
           </StyledColumn>
         </StyledRow>
@@ -30,6 +90,8 @@ const NewTeam = () => {
               Project
             </label>
             <select
+              name="project"
+              onChange={handleChange}
               class="form-select"
               aria-label="select project"
               style={{
@@ -37,12 +99,13 @@ const NewTeam = () => {
                 marginLeft: "1em",
                 width: "50%",
               }}
+              value={project}
             >
-              <option selected value="-1">
-                P1
+              <option selected value={0}>
+                select project
               </option>
-              <option value={1}>P2</option>
-              <option value={2}>P3</option>
+              <option value={"1"}>P2</option>
+              <option value={"2"}>P3</option>
             </select>
           </StyledColumn>
         </StyledRow>
@@ -52,23 +115,25 @@ const NewTeam = () => {
               Members
             </label>
             <MultiSelector
-              option={[
-                { key: 1, value: "first" },
-                { key: 2, value: "first1" },
-                { key: 3, value: "first2" },
-                { key: 4, value: "first3" },
-                { key: 5, value: "first4" },
-                { key: 6, value: "first5" },
-                { key: 7, value: "first6" },
-                { key: 8, value: "first7" },
-                { key: 9, value: "first8" },
-              ]}
+              selectEvent={onTeamSelectionChange}
+              options={membersOptions}
               customStyles={{
                 marginLeft: "1em",
                 display: "inline-block",
               }}
+              selectedOption={selMembers}
             />
           </StyledColumn>
+        </StyledRow>
+        <br></br>
+        <StyledRow className="row justify-content-center">
+          <button
+            onClick={onSave}
+            style={{ width: "auto" }}
+            className="btn btn-primary"
+          >
+            Save
+          </button>
         </StyledRow>
       </div>
     </>
