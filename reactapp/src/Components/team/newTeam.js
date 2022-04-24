@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { StyledRow, StyledColumn } from "../StyledComponents/common";
 import MultiSelector from "../common/MultiSelector";
 import axios from "axios";
+import Spinner from "../common/spinner";
+import MessageBox from "../common/message";
 
 const saveTeam = async (name, memberIds, projectId) => {
-  debugger;
   return await axios.post("http://localhost:3333/team", {
     name,
     memberIds,
@@ -17,15 +18,20 @@ const NewTeam = () => {
   const [selMembers, setSelMembers] = useState([]);
   const [name, setName] = useState("");
   const [project, setProject] = useState("");
+  const [msg, setMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSave = () => {
+  const onSave = async () => {
     if (!name) return alert("enter name");
     if (!project) return alert("enter project");
     const memberIds = selMembers.map((m) => m.key);
-    saveTeam(name, memberIds, project);
+    const resp = await saveTeam(name, memberIds, project);
+    const msg = resp.status == 200 ? "Save completed" : "Save failed";
+    setMsg(msg);
   };
 
   useEffect(() => {
+    setIsLoading(true);
     async function fetchData() {
       try {
         const members = await axios.get("http://localhost:3333/member");
@@ -36,6 +42,7 @@ const NewTeam = () => {
           };
         });
         setMembersOptions(options);
+        setIsLoading(false);
       } catch {}
     }
     fetchData();
@@ -62,6 +69,8 @@ const NewTeam = () => {
 
   return (
     <>
+      {!!msg && <MessageBox msg={msg} onClose={() => {}} />}
+      {isLoading && <Spinner />}
       <div className="container-fluid">
         <StyledRow className="row">
           <StyledColumn className="col" sty>
