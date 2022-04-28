@@ -9,6 +9,7 @@ import Team from "../team";
 import Admin from "../admin";
 import Resouces from "../resouces";
 import NewTeam from "../team/newTeam";
+import TaskType from "../task";
 
 export default function () {
   return (
@@ -23,7 +24,7 @@ export default function () {
           <Route path="admin" element={<Admin />}>
             <Route index path="resources" element={<Resouces />}></Route>
             <Route path="team" element={<NewTeam />}></Route>
-            <Route path="tasks" element={<h1>Tasks</h1>}></Route>
+            <Route path="tasks" element={<TaskType />}></Route>
             <Route path="template" element={<h1>Template</h1>}></Route>
           </Route>
         </Route>

@@ -73,7 +73,6 @@ export default function useFormState(initialState) {
   };
 
   const loadTeams = async () => {
-    debugger;
     dispatch({ type: actions.Loading, data: true });
     const resp = await axios.get("http://localhost:3333/team");
     const teams = resp.data.map((t) => {
@@ -92,19 +91,6 @@ export default function useFormState(initialState) {
       team: person.team.value,
     };
     try {
-      // debugger;
-      // fetch("http://localhost:3333/members", {
-      //   method: "post",
-      //   body: JSON.stringify(info),
-      //   //mode: "cors",
-      //   headers: {
-      //     accept: "application/json",
-      //     "content-type": "application/json",
-      //   },
-      // }).then((data) =>
-      //   setTimeout(() => dispatch({ type: actions.Save, data: true }), 2000)
-      // );
-
       const data = await axios.post("http://localhost:3333/member", info, {
         headers: {
           "Content-Type": "application/json",

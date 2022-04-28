@@ -49,7 +49,6 @@ const NewTeam = () => {
   }, []);
 
   const handleChange = (e) => {
-    debugger;
     if (e.target.name === "name") {
       setName(e.target.value);
     } else if (e.target.name === "project") {

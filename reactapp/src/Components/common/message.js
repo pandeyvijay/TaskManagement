@@ -26,7 +26,10 @@ const MessageBox = ({ msg, onClose, showd = true }) => {
             type="button"
             className="btn btn-secondary btn-sm"
             data-bs-dismiss="toast"
-            onClick={() => setShow(false)}
+            onClick={() => {
+              setShow(false);
+              onclose();
+            }}
           >
             Close
           </button>
