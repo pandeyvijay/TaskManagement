@@ -10,6 +10,7 @@ import Admin from "../admin";
 import Resouces from "../resouces";
 import NewTeam from "../team/newTeam";
 import TaskType from "../task";
+import ProjectForm from "../project/projectForm";
 
 export default function () {
   return (
@@ -20,6 +21,7 @@ export default function () {
           <Route index element={<Home />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="project" element={<Project />}></Route>
+          <Route path="project/projForm" element={<ProjectForm />} />
           <Route path="team" element={<Team />}></Route>
           <Route path="admin" element={<Admin />}>
             <Route index path="resources" element={<Resouces />}></Route>

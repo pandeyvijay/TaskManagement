@@ -1,15 +1,16 @@
 const { createTeam, getAllTeam } = require("../middletier/teamService");
+const ErrorWrapper = require("../middleware/errorMiddleware");
 
-const saveTeam = async (req, res) => {
+const saveTeam = ErrorWrapper(async (req, res) => {
   try {
     const team = await createTeam(req.body);
     return res.status(200).send(team);
   } catch (ex) {
     return res.status(400).send(null);
   }
-};
+});
 
-const getTeams = async (req, res) => {
+const getTeams = ErrorWrapper(async (req, res) => {
   try {
     console.log("teams gets");
     const teams = await getAllTeam();
@@ -17,7 +18,7 @@ const getTeams = async (req, res) => {
   } catch (ex) {
     return res.status(400).send(ex);
   }
-};
+});
 
 module.exports = {
   saveTeam,

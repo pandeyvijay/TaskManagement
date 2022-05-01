@@ -8,7 +8,6 @@ const updateTask = async (task) => {
     );
     return resp.status == 200;
   } catch (ex) {
-    console.log(ex);
     return false;
   }
 };
@@ -19,8 +18,12 @@ const createNewTask = async (task) => {
 };
 
 const getAllTask = async () => {
-  const resp = await axios.get("http://localhost:3333/task/type");
-  return resp.data;
+  try {
+    const resp = await axios.get("http://localhost:3333/task/type");
+    return resp.data;
+  } catch (ex) {
+    return [];
+  }
 };
 
 const deleteTask = async (id) => {
